@@ -9,8 +9,11 @@
 \begin{document}
 \bibliographystyle{IEEEtran}
 
-\title{Online Training Machine Learning based Decision Maker for Mobile
-Offloading Framework}
+%\title{Online Training Machine Learning based Decision Maker for Mobile
+%Offloading Framework}
+\title{Machine Learning based Runtime Scheduler with Online-Training
+Mechanism for Mobile Offloading Framework}
+
 
 \author{\IEEEauthorblockN{Heungsik Eom, Renato Figueiredo}
 \IEEEauthorblockA{Advanced Computing and Information Systems Laboratory\\
@@ -59,31 +62,34 @@ Peking University, Beijing, China\\
 
 \begin{IEEEkeywords}
 Mobile platform, computation offloading, machine learning, runtime
-decision maker, online training
+scheduler, online training
 \end{IEEEkeywords}
 
 \section{Introduction}
 %
-Over the last decade, remote offloading techniques have emerged as
+Over the last decade, mobile offloading techniques have emerged as
 intelligent means to overcome the constraints of the limited resources
 from mobile platforms, smartphones and tabletPCs, so that these types of
 devices delegate computationally intensive computing tasks to more
 powerful external resources such as personal workstations or cloud
 servers.
 %
-Initially, most of research interests on remote offloading techniques
+Initially, most of research interests on mobile offloading techniques
 have focused on core mechanisms in which \textit{what to offload} and
 \textit{how to offload} have been primarily considered. 
 %
 The research community has studied various approaches to implement mobile
-offloading framework such as application partitioning~\cite{spectra,
-maui, cuckoo}, thread migration~\cite{clonecloud, comet}, and
-application migration~\cite{hung}.\\
+offloading frameworks which fall in the following categories:
+application partitioning~\cite{spectra, maui, cuckoo}, thread
+migration~\cite{clonecloud, comet}, application migration~\cite{hung},
+and distributed offloading frameworks~\cite{mmr, sonora, serendipity}.\\
 %
-\indent However, benefits from offloading computation-intensive portions
-of mobile applications can be influenced by various internal and
-external factors such as application requirements, network conditions,
-and computing capabilities of mobile or external devices.
+\indent However, one important fact from an offloading performance
+standpoint of view is that benefits from offloading
+computation-intensive portions of mobile applications can be influenced
+by various internal and extenal factors such as application
+requirements, network conditions, and computing capabilities of mobile
+or external devices.
 %
 Thus, \textit{whether to offload or execute locally} needs to be
 decided periodically by monitoring aforementioned dynamic features on
@@ -97,92 +103,93 @@ dynamic scheduling or decision making problems for mobile offloading
 framework.
 %
 For example, Kwon et al.~\cite{kwon} consider a simple rule-based
-decision maker in which the framework decides to offload the mobile
+scheduler in which the framework decides to offload the mobile
 computation only when the data transfer size is greater than a certain
 threshold.
 %
 MAUI~\cite{maui} utilizes a linear regression model among predefined
 features to make offloading decisions.\\
 %
-%Also our previous paper suggested to apply machine learning
-%techniques to the adaptive scheduling problem for mobile offloading
-%framework by considering various machine learning algorithms~\cite{ml}.
-%
-\indent Even though these studies on the decision maker for mobile
-offloading systems take dynamic features such as data transfer size or
-network conditions to make offloading decisions, it is impractical for
-these approaches to build a globally well-defined offloading decision
-policy while considering all possible cases against dynamic mobile
-environments.
+\indent Even though these studies on the runtime scheduler for mobile
+offloading system take dynamic features such as data transfer size or
+network conditions into account to make offloading decisions, it is
+impractical for these approaches to build a globally well-defined
+offloading decision policy while considering all possible cases against
+dynamic mobile environments.
 %
 Furthermore, it is difficult to generalize the above efforts for various
 mobile application use case scenario, since different applications need
 to have different offloading decision policies due to different
 application requirements or characteristics.
 %
-Therefore, in practice, it is necessary for the decision maker to learn
+Therefore, in practice, it is necessary for the scheduler to learn
 from self-observation of the previous decision correctness and to
 dynamically adapt the decision policy on runtime, thereby an identical
 decision model can be \textit{generally} applied to various mobile
 applications without any predefined decision policies.\\
 %
 \indent In this paper, we aim to develop a general framework for a
-runtime adaptive decision maker for mobile offloading framework by
-employing various types of machine learning techniques.
+runtime adaptive scheduler for mobile offloading framework by
+employing various types of machine learning techniques
 %
 By applying machine learning techniques to scheduling problems
 for mobile offloading framework, the machine learning classifier can
-make decisions on whether the mobile computations should be offloaded to
-external resources or executed in local.
+make decisions on whether mobile computations should be offloaded to
+external resources or executed locally.
 %
 To this end, we modularized our previous work on the machine learning
-based runtime decision maker~\cite{ml} in which any appropriate machine
-learning classifiers can be employed for the offloading decision maker.
+based runtime scheduler~\cite{ml} in which any appropriate machine
+learning classifiers can be utilized for the runtime scheduler for
+mobile offloading framework.
 %
-Also, this can be plugged and played with any types of mobile offloading
+This work can be plugged and played with any types of mobile offloading
 frameworks in conjunction with the well-defined APIs to monitor and
-acquire dynamic features 
-
-
-which can be used for any mobile
-offloading frameworks
-and applied it to Java-based mobile
-offloading system called \textit{Dpartner}~\cite{dpartner}.
+acquire dynamic features such as data size, network conditions, or the
+status of external devices. 
 %
-
+Furthermore, our work supports an online training mechanism for
+the machine learning based runtime scheduler such that it learns from
+observation on the previous offloading decision performance, and
+dynamically adapts its decision policy on runtime.\\
 %
-We evaluated the cost and performance for three machine learning
-algorithms, instance based learning, perceptron, and na\"{i}ve bayes with
-respect to classifier build time, classification time, and decision
-accuracy.\\
+\indent As part of the modularization effort, we integrated the
+modularized machine learning based runtime scheduler into the Java based
+mobile offloading system called \textit{Dpartner}~\cite{dpartner}.
 %
-\indent After investigating the cost and performance of three machine 
-learning algorithms for the runtime offloading decision maker, we
-describe how we enable the online training mechanism for the runtime
-decision maker.
+Originally, Dpartner depends on the web based user interface to offload
+or execute the offloadable tasks(i.e. classes) in local, so the user
+schedules them manually by manipulating the UI in a drag-and-drop way.  
 %
-The framework supports an online training mechanism for the
-machine learning based runtime decision maker such that it feedbacks and 
-learns from observation on the previous offloading decision
-performance, and adapts its decision making policy on runtime.
+By combining the machine learning based runtime scheduler with Dpartner,
+the user can be free of the scheduling task.
+%
+Based on this integration, we evaluated the cost and performance for
+three machine learning algorithms, instance based learning, perceptron,
+and na\"{i}ve bayes with respect to classifier build time,
+classification time, and scheduling accuracy.
 %
 Even though there have been prior related studies which suggest
 utilizing machine learning techniques for mobile computing environments,
 to the best of our knowledge, our work is the first to consider the
-online training mechanism for the machine learning based decision maker
-for mobile offloading framework.\\   
+online training mechanism for the machine learning based runtime
+scheduler for mobile offloading framework and demonstarate the
+performance and cost of various machine learning algorithms for the use
+of the runtime scheduler of mobile offloading framework.\\   
 %
 \indent The rest of the paper is organized  as follows.
 %
-In Section II, we overview previous studies on offloading decision
-problems in mobile offloading frameworks, as well as the use of machine
-learning techniques for various scheduling problems.
+In Section II, we overview prior research efforts on offloading decision
+problems in mobile offloading framework as well as the use of machine
+learning techniques for scheduling problems from various domains.
 %
-Section III discusses the challenges in online training machine learning
-runtime scheduler for mobile offloading framework.
+Section III summarizes our previous work which proposed the machine
+learning based runtime scheduler for mobile offloading framework.
+%
+Section IV motives the concept of the online machine learning based
+runtime scheduler.
 %
 In Section IV and V, we explain and evaluate our implementation of the
-online training ML scheduler.
+online ML scheduler.
 %
 Also, Section VI describes the current and potential applications for
 our work.
@@ -191,25 +198,39 @@ Finally, we conclude the paper in Section VII.
 %
 \section{Related Works}
 %
-\section{Adaptive Decision Maker for Remote Offloading System}
+\section{Adaptive Scheduler for Mobile Offloading System}
 %
+In this section, we summarize our previous work on the machine learning
+based runtime scheduler for mobile offloading frameowork.
+%
+In our previous work, we noticed the offloading performance dependency on
+various dynamic features.
+%
+Then, we suggested applying machine learning techniques to the runtime
+scheduler for mobile offloading framework by showing the performance
+difference among various machine learning algorithms. 
+% 
 \subsection{Offloading Performance}
 %
-\subsection{Machine Learning based Runtime Decision Maker}
+In our previous work~\cite{ml}, we demonstrated the performance
+dependancy
 %
-\section{Challenge on Online Training ML based Runtime Decision Maker
-for Mobile Offloading System}
+
+\subsection{Machine Learning based Runtime Scheduler}
+%
+\section{Challenge on Self-Training ML based Runtime Scheduler for
+Mobile Offloading System}
 %
 \subsection{Offline vs. Online}
 %
-\subsection{Requirement for Online Training ML based Decision Maker for
+\subsection{Requirement for Self-Training ML based Runtime Scheduler for
 Mobile Offloading System}
 %
-\section{Implementation of Online Training for ML based Decision Maker}
+\section{Implementation of Self-Training ML based Runtime Scheduler}
 %
-\subsection{Java-Based Mobile Offloading System}
+\subsection{Integration with Java based Mobile Offloading System}
 %
-\subsection{Online Training}
+\subsection{Self-Training Mechanism}
 %
 \section{Evaluation}
 %
