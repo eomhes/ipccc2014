@@ -11,8 +11,8 @@
 
 %\title{Online Training Machine Learning based Decision Maker for Mobile
 %Offloading Framework}
-\title{Machine Learning based Runtime Scheduler with Online-Training
-Mechanism for Mobile Offloading Framework}
+\title{Machine Learning-based Mobile Offloading Scheduler with Online
+Training}
 
 
 \author{\IEEEauthorblockN{Heungsik Eom, Renato Figueiredo}
@@ -130,7 +130,7 @@ applications without any predefined decision policies.\\
 %
 \indent In this paper, we aim to develop a general framework for a
 runtime adaptive scheduler for mobile offloading framework by
-employing various types of machine learning techniques
+employing various types of machine learning techniques.
 %
 By applying machine learning techniques to scheduling problems
 for mobile offloading framework, the machine learning classifier can
@@ -204,7 +204,7 @@ In this section, we summarize our previous work on the machine learning
 based runtime scheduler for mobile offloading frameowork.
 %
 In our previous work, we noticed the offloading performance dependency on
-various dynamic features.
+various dynamic features such as data size and network conditions.
 %
 Then, we suggested applying machine learning techniques to the runtime
 scheduler for mobile offloading framework by showing the performance
@@ -212,10 +212,32 @@ difference among various machine learning algorithms.
 % 
 \subsection{Offloading Performance}
 %
-In our previous work~\cite{ml}, we demonstrated the performance
-dependancy
+In our previous work~\cite{ml}, we validated the necessity and efficacy
+of the runtime scheduler for mobile offloading framework through
+detailed measurement experiments.
 %
-
+With the OpenCL-based mobile offloading framework~\cite{oclremote}, we
+performed various experiments using four different OpenCL workload
+kernels used in a variety of areas such as image processing filters and
+mathematical simulations.
+%
+Also, in order to observe the impact of different network conditions on
+the offoading performance, we configured different network conditions:
+local area network, campus network, and wide area network(i.e. Amazon
+EC2 cloud).
+%
+In the evaluation, we verified that different network conditions cause
+significantly different offloading performance.
+%
+In most cases, offloading to the remote resource located in local area
+network always has better performance than local processing in all
+OpenCL workload kernels.
+%
+In contrast, offloading to the remote resource located in campus network
+or Amazon EC2 cloud, where have much limited network conditions than
+local area network, can exhibit longer execution time than local
+processing according to the size of data transfer. 
+%
 \subsection{Machine Learning based Runtime Scheduler}
 %
 \section{Challenge on Self-Training ML based Runtime Scheduler for
