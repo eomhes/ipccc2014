@@ -148,19 +148,19 @@ acquire dynamic features such as data size, network conditions, or the
 status of external devices. 
 %
 Furthermore, our work supports an online training mechanism for
-the machine learning based runtime scheduler such that it learns from
+the machine learning-based runtime scheduler such that it learns from
 observation on the previous offloading decision performance, and
 dynamically adapts its decision policy on runtime.\\
 %
 \indent As part of the modularization effort, we integrated the
-modularized machine learning based runtime scheduler into the Java based
+modularized machine learning-based runtime scheduler into the Java based
 mobile offloading system called \textit{Dpartner}~\cite{dpartner}.
 %
 Originally, Dpartner depends on the web based user interface to offload
 or execute the offloadable tasks(i.e. classes) in local, so the user
 schedules them manually by manipulating the UI in a drag-and-drop way.  
 %
-By combining the machine learning based runtime scheduler with Dpartner,
+By combining the machine learning-based runtime scheduler with Dpartner,
 the user can be free of the scheduling task.
 %
 Based on this integration, we evaluated the cost and performance for
@@ -171,7 +171,7 @@ classification time, and scheduling accuracy.
 Even though there have been prior related studies which suggest
 utilizing machine learning techniques for mobile computing environments,
 to the best of our knowledge, our work is the first to consider the
-online training mechanism for the machine learning based runtime
+online training mechanism for the machine learning-based runtime
 scheduler for mobile offloading framework and demonstarate the
 performance and cost of various machine learning algorithms for the use
 of the runtime scheduler of mobile offloading framework.\\   
@@ -185,7 +185,7 @@ learning techniques for scheduling problems from various domains.
 Section III summarizes our previous work which proposed the machine
 learning based runtime scheduler for mobile offloading framework.
 %
-Section IV motives the concept of the online machine learning based
+Section IV motives the concept of the online machine learning-based
 runtime scheduler.
 %
 In Section IV and V, we explain and evaluate our implementation of the
@@ -198,17 +198,17 @@ Finally, we conclude the paper in Section VII.
 %
 \section{Related Works}
 %
-\section{Adaptive Scheduler for Mobile Offloading System}
+\section{Runtime Scheduler for Mobile Offloading System}
 %
 In this section, we summarize our previous work on the machine learning
-based runtime scheduler for mobile offloading frameowork.
+based runtime scheduler for mobile offloading framework.
 %
 In our previous work, we noticed the offloading performance dependency on
 various dynamic features such as data size and network conditions.
 %
 Then, we suggested applying machine learning techniques to the runtime
-scheduler for mobile offloading framework by showing the performance
-difference among various machine learning algorithms. 
+scheduler for mobile offloading framework by showing the performance and
+cost among various machine learning algorithms. 
 % 
 \subsection{Offloading Performance}
 %
@@ -216,7 +216,7 @@ In our previous work~\cite{ml}, we validated the necessity and efficacy
 of the runtime scheduler for mobile offloading framework through
 detailed measurement experiments.
 %
-With the OpenCL-based mobile offloading framework~\cite{oclremote}, we
+With the OpenCL-based mobile offloading framework~\cite{ocloff}, we
 performed various experiments using four different OpenCL workload
 kernels used in a variety of areas such as image processing filters and
 mathematical simulations.
@@ -230,29 +230,67 @@ In the evaluation, we verified that different network conditions cause
 significantly different offloading performance.
 %
 In most cases, offloading to the remote resource located in local area
-network always has better performance than local processing in all
-OpenCL workload kernels.
+network has better performance than local processing in four OpenCL
+workload kernels used for the experiments.
 %
 In contrast, offloading to the remote resource located in campus network
-or Amazon EC2 cloud, where have much limited network conditions than
+and Amazon EC2 cloud, where have much limited network conditions than
 local area network, can exhibit longer execution time than local
-processing according to the size of data transfer. 
+processing according to the size of data transfer.\\ 
 %
-\subsection{Machine Learning based Runtime Scheduler}
+\indent It is also worth noting that each OpenCL workload kernel shows
+the different performance, even though they process the similar size of
+data.
 %
-\section{Challenge on Self-Training ML based Runtime Scheduler for
-Mobile Offloading System}
+This is because each kernel has different computational complexities so
+they gain the different amount of performance improvement while paying
+the same cost to send the data to the remote resource.
+%
+These results show that there exists the offloading performance
+variation over different network conditions and OpenCL workload kernels.
+%
+Consequently, proper scheduling can have a significant impact on the
+offloading performance, and mobile offloading framework requires the
+support from the runtime scheduler.
+%
+\subsection{Machine Learning-based Runtime Scheduler}
+%
+Based on our observation, we applied machine learning techniqeus to the
+runtime scheduling problem for mobile offloading framework.
+%
+For doing this, we first chose a set of relevant attributes which have
+an impact on making offloading decisions.
+%
+Also, by running the OpenCL-based offloading framework with different
+network configurations, OpenCL workload kernels, and data size, we
+collected a total 640 data instances to train and test the classifiers
+of various machine learning algorithms.
+%
+Using the gathered dataset, we trained various machine learning
+classifiers with \textit{Weka}, a Java-based open source package for
+machine learning techniques.
+%
+Finally, we implemented the machine learning-based runtime scheduler by
+builing the trained machine learning classifiers onto the
+OpenCL-based mobile offloading system.\\
+%
+\indent In order to evaluate the machine learning-based runtime
+scheduler for mobile offloading framework, we deployed the OpenCL-based
+offloading system under various network bandwidth controlled by a
+network characteristic tool called \textit{Traffic Control}(TC).  
+%
+\section{Challenge on Online Training ML based Runtime Scheduler}
 %
 \subsection{Offline vs. Online}
 %
-\subsection{Requirement for Self-Training ML based Runtime Scheduler for
-Mobile Offloading System}
+\subsection{Requirement for Online Training ML based Runtime Scheduler}
 %
-\section{Implementation of Self-Training ML based Runtime Scheduler}
+\section{Implementation of ML based Runtime Scheduler with Online
+Training}
 %
 \subsection{Integration with Java based Mobile Offloading System}
 %
-\subsection{Self-Training Mechanism}
+\subsection{Online Training Mechanism}
 %
 \section{Evaluation}
 %
