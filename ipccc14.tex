@@ -5,6 +5,7 @@
 \usepackage{epsfig}
 \usepackage{graphicx}
 \usepackage{subfigure}
+\usepackage{algorithmic}
 
 \begin{document}
 \bibliographystyle{IEEEtran}
@@ -87,7 +88,7 @@ and distributed offloading frameworks~\cite{mmr, sonora, serendipity}.\\
 \indent However, one important fact from an offloading performance
 standpoint of view is that benefits from offloading
 computation-intensive portions of mobile applications can be influenced
-by various internal and extenal factors such as application
+by various internal and external factors such as application
 requirements, network conditions, and computing capabilities of mobile
 or external devices.
 %
@@ -137,10 +138,10 @@ for mobile offloading framework, the machine learning classifier can
 make decisions on whether mobile computations should be offloaded to
 external resources or executed locally.
 %
-To this end, we modularized our previous work on the machine learning
-based runtime scheduler~\cite{ml} in which any appropriate machine
-learning classifiers can be utilized for the runtime scheduler for
-mobile offloading framework.
+To this end, we modularized our previous work on the machine
+learning-based runtime scheduler~\cite{ml} in which any appropriate
+machine learning classifiers can be utilized for the runtime scheduler
+for mobile offloading framework.
 %
 This work can be plugged and played with any types of mobile offloading
 frameworks in conjunction with the well-defined APIs to monitor and
@@ -172,7 +173,7 @@ Even though there have been prior related studies which suggest
 utilizing machine learning techniques for mobile computing environments,
 to the best of our knowledge, our work is the first to consider the
 online training mechanism for the machine learning-based runtime
-scheduler for mobile offloading framework and demonstarate the
+scheduler for mobile offloading framework and demonstrate the
 performance and cost of various machine learning algorithms for the use
 of the runtime scheduler of mobile offloading framework.\\   
 %
@@ -200,8 +201,8 @@ Finally, we conclude the paper in Section VII.
 %
 \section{Runtime Scheduler for Mobile Offloading System}
 %
-In this section, we summarize our previous work on the machine learning
-based runtime scheduler for mobile offloading framework.
+In this section, we summarize our previous work on the machine
+learning-based runtime scheduler for mobile offloading framework.
 %
 In our previous work, we noticed the offloading performance dependency on
 various dynamic features such as data size and network conditions.
@@ -271,26 +272,141 @@ classifiers with \textit{Weka}, a Java-based open source package for
 machine learning techniques.
 %
 Finally, we implemented the machine learning-based runtime scheduler by
-builing the trained machine learning classifiers onto the
+building the trained machine learning classifiers onto the
 OpenCL-based mobile offloading system.\\
 %
 \indent In order to evaluate the machine learning-based runtime
 scheduler for mobile offloading framework, we deployed the OpenCL-based
 offloading system under various network bandwidth controlled by a
-network characteristic tool called \textit{Traffic Control}(TC).  
+network characteristic tool called \textit{Traffic Control}(TC).
 %
-\section{Challenge on Online Training ML based Runtime Scheduler}
+In our evaluation, we observed that most of the machine learning-based
+schedulers show the reasonably high scheduling performance by achieving
+higher than 80\% of the scheduling accuracy.
 %
-\subsection{Offline vs. Online}
+Especially, Instance-Based Learning has the most accurate scheduling
+performance among various schedulers showing 92\% of the scheduling
+accuracy.
 %
-\subsection{Requirement for Online Training ML based Runtime Scheduler}
+Compared with other machine learning-based schedulers, furthermore,
+Instance-Based Learning exhibits a fairly small penalty, which is the
+additional cost in terms of the execution time and energy consumption
+when the scheduler makes wrong decisions.
 %
-\section{Implementation of ML based Runtime Scheduler with Online
-Training}
+\section{Challenge on Online Training for Machine Learning-based Mobile
+Offloading Scheduler}
 %
-\subsection{Integration with Java based Mobile Offloading System}
+The main goal in this work is to construct the machine learning-based
+runtime scheduler with online training for mobile offloading framework.
 %
-\subsection{Online Training Mechanism}
+In this section, we explain the difference between offline and online
+training for the machine learning technique.
+%
+Also, we describe the challenge on the online training mechanism for the
+machine learning-based runtime scheduler.
+%
+\subsection{Offline vs. Online Training}
+%
+Machine learning technique is a branch of artificial intelligence
+through which a system can learn from previous experiences proactively
+and predict the future actions of the target system.
+%
+In fact, there exist two possible ways to train the machine learning
+classifier: \textit{offline} and \textit{online} training.
+%
+In offline training, the machine learning classifier can be trained
+using a set of the pre-collected static data.
+%
+Once the machine learning classifier is trained in the initial training
+phase, the classifier does not change its prediction behavior.
+%
+It is therefore difficult to reflect the unseen situations or conditions
+which have not been trained in the initial training phase.
+%
+For that reason, offline machine learning is trained through a large set
+of data which covers as many cases as possible in order to accomplish
+the high prediction performance.\\
+%
+\indent On the other hand, the online machine learning technique does
+not depend on any pre-trained classifiers to approximate or predict 
+the future behaviors of the target system.
+%
+Instead, online machine learning trains its classifier at a time
+when a new data instance arrives in.
+%
+More specifically, the classifier of online machine learning is trained
+whenever the result of the comparison between the prediction and actual
+behavior is available.
+%
+Thus, the main challenge of online machine learning is to deliver the
+prediction correctness into the training process so that it can train
+the classifier continuously based on the prediction correctness feedback.
+%
+\subsection{Requirement for Online Training Machine Learning-based
+Mobile Offloading Scheduler}
+%
+As mentioned in the previous subsection, the online training mechanism has
+to maintain its own continuous feedback channel from the examination of
+whether the prediction made by the classifier is correct, and if not,
+which prediction should have made in the case where multiple predictions
+are available.  
+%
+However, it can be too expensive to feedback with the correct
+prediction, since the system may have to try all of the possible cases
+to figure out the correct prediction.\\
+%
+\indent In the case for the mobile offloading scheduler, even though
+there exist only two possible cases: offloading and local processing,
+the mobile platform also has to pay for both offloading and local
+processing.  
+%
+It is therefore required to minimize the online training phase while
+guaranteeing the reasonable scheduling accuracy.
+%
+In this paper, we address these challenges by proposing the adaptive
+online training mechanism in which the training phase stretches and
+shrinks dynamically according to the scheduling accuracy. 
+%
+\section{Architecture of Machine Learning-based Runtime Scheduler with
+Online Training}
+%
+In this section, we describe the architecture and main modules of the
+machine learning-based mobile offloading scheduler with online training.
+%
+%
+\begin{figure}
+\centering
+\includegraphics[height=5.2cm, width=7.5cm]{Figure/figure1}
+\caption{Overall architecture of the ML-based mobile offloading
+scheduler with online training. The dotted lines indicate the
+application and network features flow path, and the solid lines are the
+applciation workloads or scheduling-related commands flow path.}
+\end{figure}
+%
+\subsection{Java based Mobile Offloading System}
+%
+\subsection{Integration of the Machine Learning-based Runtime Scheduler}
+%
+\subsection{Adaptive Online Training Mechanism}
+%
+%\begin{figure}
+%\algsetup{indent=1.0cm}
+%\begin{algorithmic}[1]
+%\REQUIRE $scheduling accuracy threshold $     \COMMENT{an object to be inserted}
+%\REQUIRE $scheduling$ $accuracy$ $threshold~ t$
+%$minimum$ $training$ $number~ min$
+%\REQUIRE $maximum$ $training$ $number~ max$
+%
+%\STATE $object\_list \leftarrow n.getObjects()$ %\COMMENT{a list of objects for this node}
+%\IF{$o$ is not in $object\_list$}
+%  \STATE $object\_list.put(o)$
+%  \RETURN \TRUE
+%\ELSE
+%  \RETURN \FALSE
+%\ENDIF
+%\end{algorithmic}
+%\caption{Adaptive online training phase}
+%\end{figure}
 %
 \section{Evaluation}
 %
