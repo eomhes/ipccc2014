@@ -158,7 +158,7 @@ modularized machine learning-based runtime scheduler into the Java based
 mobile offloading system called \textit{Dpartner}~\cite{dpartner}.
 %
 Originally, Dpartner depends on the web based user interface to offload
-or execute the offloadable tasks(i.e. classes) in local, so the user
+or execute the offloadable tasks (i.e. classes) in local, so the user
 schedules them manually by manipulating the UI in a drag-and-drop way.  
 %
 By combining the machine learning-based runtime scheduler with Dpartner,
@@ -224,7 +224,7 @@ mathematical simulations.
 %
 Also, in order to observe the impact of different network conditions on
 the offoading performance, we configured different network conditions:
-local area network, campus network, and wide area network(i.e. Amazon
+local area network, campus network, and wide area network (i.e. Amazon
 EC2 cloud).
 %
 In the evaluation, we verified that different network conditions cause
@@ -278,7 +278,7 @@ OpenCL-based mobile offloading system.\\
 \indent In order to evaluate the machine learning-based runtime
 scheduler for mobile offloading framework, we deployed the OpenCL-based
 offloading system under various network bandwidth controlled by a
-network characteristic tool called \textit{Traffic Control}(TC).
+network characteristic tool called \textit{Traffic Control} (TC).
 %
 In our evaluation, we observed that most of the machine learning-based
 schedulers show the reasonably high scheduling performance by achieving
@@ -373,21 +373,98 @@ Online Training}
 In this section, we describe the architecture and main modules of the
 machine learning-based mobile offloading scheduler with online training.
 %
+Then, we give the implementation details on the adaptive online training
+mechanism.
+%
+Finally, we explain how the proposed machine learning-based mobile
+offloading scheduler can be integrated with mobile offloading framework.
+%
+The overall architecture and main modules of the machine learning-based
+mobile offloading scheduler with online training are illustrated in
+Figure 1.
 %
 \begin{figure}
 \centering
-\includegraphics[height=5.2cm, width=7.5cm]{Figure/figure1}
+\includegraphics[height=5.2cm, width=7.6cm]{Figure/figure1}
 \caption{Overall architecture of the ML-based mobile offloading
 scheduler with online training. The dotted lines indicate the
 application and network features flow path, and the solid lines are the
 applciation workloads or scheduling-related commands flow path.}
 \end{figure}
 %
-\subsection{Java based Mobile Offloading System}
+\subsection{Architecture of the Machine Learning-based Mobile Offloading
+Scheduler}
 %
-\subsection{Integration of the Machine Learning-based Runtime Scheduler}
+As depicted in Figure 1, the overall architecture of the machine
+learning-based mobile offloading scheduler with online training consists
+of four main modules: computing task router, runtime scheduler, machine
+learning classifier, and machine learning classifier trainer which
+interact with each other to execute and schedule the mobile computing
+tasks, and train the machine learning classifier.\\
+%
+\textbf{Computing task router.} The computing task router has the
+responsibility to route the mobile computing tasks either to the remote
+channel (for offloading) or to the local channel (for local processing)
+according to the scheduling table which stores the scheduling status of
+each computing task.
+%
+Also, the router keeps the feedback channel with the classifer updater
+in the machine learning classifier trainer module so that it provides
+the performance comparison between offloading and local processing 
+the offloading and local processing performance.\\
+%
+\textbf{Runtime scheduler.} Since scheduling mobile computations
+requires to profile internal and external dynamic features such as data
+size and network conditions on runtime, the scheduling task results in
+the additional costs in terms of the execution delay and energy
+consumption.
+%
+Thus, there exists the tradeoff between the scheduling performance and
+cost, as coarse-grained scheduling is much cheaper than frequent
+scheduling, but it leads worse scheduling accuracy.    
+%
+For this reason, we consider two scheduling strategies.
+%
+First strategy reschedules the mobile computations whenever the
+application executes these mobile computations.
+%
+We refer this strategy to the \textit{on-demand scheduling}.
+%
+Another strategy is the \textit{periodic scheduling} in which the mobile
+computing tasks are rescheduled asynchronously with the adaptive
+scheduling interval.
+%
+In the periodic scheduling strategy, in other words, scheduling the mobile
+computations is done with the specific interval regardless of the
+invocations of the mobile computations from the application.
+%
+However, in order to prevent unnecessarily too frequent scheduling, the
+scheduling interval controller changes the scheduling interval according
+to network conditions such that the interval becomes shorter if the
+variation of network bandwidth is less than a certain threshold.
+%
+Otherwise, the scheduling frequency leaves in a long interval mode.
+%
+To end this, the scheduling interval controller stores previous
+\textit{N} network bandwidth measurement histories.\\
+%
+\textbf{Machine learning classifier.} The machine learning classifier is
+in charge of making decisions on offloading or local processing for the
+offloadable mobile computing tasks with dynamic features(i.e.
+attributes) obtained from the network and application profiler.
+%
+Even though it is possible to use several attributes to capture the
+present scheduling problem from internal and external environment, we
+used two attributes: data size to be sent to the remote resource and
+network bandwidth in the current implementation.
+%
+%First strategy is the on-demand scheduling in which the mobile
+%computations are rescheduled whenever the application executes those
+%mobile computatoins. 
 %
 \subsection{Adaptive Online Training Mechanism}
+%
+\subsection{Integration with Mobile Offloading Framework}
 %
 %\begin{figure}
 %\algsetup{indent=1.0cm}
@@ -409,6 +486,8 @@ applciation workloads or scheduling-related commands flow path.}
 %\end{figure}
 %
 \section{Evaluation}
+%
+\subsection{Experimental Setup}
 %
 \subsection{Training Cost}
 %
