@@ -239,7 +239,7 @@ and Amazon EC2 cloud, where have much limited network conditions than
 local area network, can exhibit longer execution time than local
 processing according to the size of data transfer.\\ 
 %
-\indent It is also worth noting that each OpenCL workload kernel shows
+\indent It is worth noting that each OpenCL workload kernel shows
 the different performance, even though they process the similar size of
 data.
 %
@@ -397,12 +397,12 @@ Scheduler}
 %
 As depicted in Figure 1, the overall architecture of the machine
 learning-based mobile offloading scheduler with online training consists
-of four main modules: computing task router, runtime scheduler, machine
+of four main modules: computation router, runtime scheduler, machine
 learning classifier, and machine learning classifier trainer which
 interact with each other to execute and schedule the mobile computing
 tasks, and train the machine learning classifier.\\
 %
-\textbf{Computing task router.} The computing task router has the
+\textbf{Computation router.} The computation router has the
 responsibility to route the mobile computing tasks either to the remote
 channel (for offloading) or to the local channel (for local processing)
 according to the scheduling table which stores the scheduling status of
@@ -414,10 +414,10 @@ the performance comparison between offloading and local processing
 the offloading and local processing performance.\\
 %
 \textbf{Runtime scheduler.} Since scheduling mobile computations
-requires to profile internal and external dynamic features such as data
-size and network conditions on runtime, the scheduling task results in
-the additional costs in terms of the execution delay and energy
-consumption.
+requires to profile internal and external dynamic features which are
+used for machine learning attributes such as data size and network
+conditions on runtime, the scheduling process results in the additional
+costs in terms of the execution delay and energy consumption.
 %
 Thus, there exists the tradeoff between the scheduling performance and
 cost, as coarse-grained scheduling is much cheaper than frequent
@@ -450,28 +450,87 @@ To end this, the scheduling interval controller stores previous
 %
 \textbf{Machine learning classifier.} The machine learning classifier is
 in charge of making decisions on offloading or local processing for the
-offloadable mobile computing tasks with dynamic features(i.e.
-attributes) obtained from the network and application profiler.
+offloadable mobile computing tasks by using the attributes obtained by
+the network and application profiler.
 %
-Even though it is possible to use several attributes to capture the
-present scheduling problem from internal and external environment, we
-used two attributes: data size to be sent to the remote resource and
-network bandwidth in the current implementation.
+Even though it is possible to adopt various attributes to capture the
+present scheduling problem from internal and external environments, for
+the current implementation, we utilized two attributes: the size of data
+to be sent to the remote resource and network bandwidth.
 %
-%First strategy is the on-demand scheduling in which the mobile
-%computations are rescheduled whenever the application executes those
-%mobile computatoins. 
+It is also worth noting that, in the periodic scheduling mode, the
+real-time measurement of the data size of the mobile computations is
+unfeasible because the scheduling process is triggered periodically, but
+asynchronously regardless of the invokations of the mobile computations.
+%
+In the periodic scheduling mode, instead, the application profiler
+calculates the mean and standard deviation of the previous measurements
+to anticipate the maximum and minimum possible data size.
+%
+Then, the machine learning classifier makes the decision on offloading
+only when both classifications with the maximum and minimum possible
+data size agree on offloading.\\
+%
+\textbf{Machine learning classifier trainer.} With the feedback on the
+performance comparison between offloading and local processing from the
+computation router, the machine learning classifier trainer updates
+the machine leanring classifier.
+%
+In order to compare the performance between offloading and local
+processing, the trainer creates one separate thread for local
+processing, so that offloading and local processing can be executed
+simultaneously.
+%
+Then the computation router measures the execution time for both
+offloading and local processing to compare the performance and provide
+the feedback into the classifier updater.
+%
+Finally, with this feedback from the computation router and the
+attributes from the profilers, the classifier updater trains the
+classifier.
 %
 \subsection{Adaptive Online Training Mechanism}
 %
-\subsection{Integration with Mobile Offloading Framework}
+\begin{figure}
+\centering
+\includegraphics[height=3.3cm, width=8.5cm]{Figure/figure2}
+\caption{An example of the adaptive online training mechanism.}
+\end{figure}
+%
+One of important contributions of this work is the adaptive online
+training mechanism in which the training phase stretches and shrinks
+according to the scheduling performance (i.e. scheduling accuracy).
+%
+Figure 2 illustrate the example of how the adaptive online training
+mechanism.
+%
+In this example, we set the minimum number of the execution of the
+mobile computations in one period to 5.\\
+%
+\indent First of all, the training phase (empty bars) in a period
+continues until the scheduling accuracy is greater than a certain
+threshold.
+%
+In order to avoid 100\% of the scheduling accuracy in first training, we
+insert a dummy training which does nothing, but indicates a wrong
+decision.
+%
+By putting this dummy training into the measurement of the scheduling
+accuracy, more than one training in a period can be guaranteed.
+%
+Once the training phase finishes, the normal operating phase follows by
+starting the scheduling process until the period finishes.
+%
+Since we set 75\% of the accuracy threshold for this example, three
+training 
 %
 %\begin{figure}
 %\algsetup{indent=1.0cm}
 %\begin{algorithmic}[1]
-%\REQUIRE $scheduling accuracy threshold $     \COMMENT{an object to be inserted}
-%\REQUIRE $scheduling$ $accuracy$ $threshold~ t$
-%$minimum$ $training$ $number~ min$
+%\STATE
+%\REQUIRE $threshold~ th$		\COMMENT{scheduling accuracy threshold}
+%		 $mininum$ $number~num_{min}$		\COMMENT{minimum execution number in one
+%period}
 %\REQUIRE $maximum$ $training$ $number~ max$
 %
 %\STATE $object\_list \leftarrow n.getObjects()$ %\COMMENT{a list of objects for this node}
@@ -484,6 +543,8 @@ network bandwidth in the current implementation.
 %\end{algorithmic}
 %\caption{Adaptive online training phase}
 %\end{figure}
+%
+\subsection{Integration with Mobile Offloading Framework}
 %
 \section{Evaluation}
 %
