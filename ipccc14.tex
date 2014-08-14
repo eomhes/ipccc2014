@@ -181,7 +181,7 @@ scheduler for mobile offloading framework and demonstrate the
 performance and cost of various machine learning algorithms for the use
 of the runtime scheduler of mobile offloading framework.\\   
 %
-\indent The rest of the paper is organized  as follows.
+\indent The rest of the paper is organized as follows.
 %
 In Section II, we overview prior research efforts on offloading decision
 problems in mobile offloading framework as well as the use of machine
@@ -343,7 +343,7 @@ whenever the result of the comparison between the prediction and actual
 behavior is available.
 %
 Thus, the main challenge of online machine learning is to deliver the
-prediction correctness into the training process so that it can train
+prediction correctness into the training process, so that it can train
 the classifier continuously based on the prediction correctness feedback.
 %
 \subsection{Requirement for Online Training Machine Learning-based
@@ -402,18 +402,37 @@ Scheduler}
 As depicted in Figure 1, the overall architecture of the machine
 learning-based mobile offloading scheduler with online training consists
 of four main modules: computation router, runtime scheduler, machine
-learning classifier, and machine learning classifier trainer which
-interact with each other to execute and schedule the mobile computing
-tasks, and train the machine learning classifier.\\
+learning classifier, and machine learning classifier trainer.
+%
+These four main modules interact with each other to execute and
+schedule the mobile computing task, and train the machine learning
+classifier while switching two different phases: \textit{normal
+operation phase} and \textit{online training phase}.
+%
+In the normal operation phase, when the computation router receives the
+offloadable computations (\textcircled{1}), according to the scheduling
+status (\textcircled{2}), it routes these computations to the
+appropriate execution unit, local computing units or network interface
+(\textcircled{3}). 
+%
+On the other hand, in the online training phase, the offloadble
+computations are forwarded to both execution units, and the computation
+router feedbacks the performance comparison between offloading and local
+processing (\textcircled{4}).
+%
+Based on the feedback from the router, classifer trainer updates the
+machine learning classifier{\textcircled{5}).
+%
+The implementation details for main modules are as follows: \\
 %
 \textbf{Computation router.} The computation router has the
-responsibility to route the offloadable mobile computations either to the
+responsibility to forward the offloadable mobile computations either to the
 network interface (for offloading) or to the local computing units (for
 local processing) according to the scheduling status of each offloadable
-computation which is stored by in scheduling table.
+computation which is stored in scheduling table.
 %
 Also, the router keeps the feedback channel with the classifier updater
-in the machine learning classifier trainer module so that it provides
+in the machine learning classifier trainer module, so that it provides
 the performance comparison between offloading and local processing 
 the offloading and local processing performance.\\
 %
@@ -618,11 +637,35 @@ tasks.
 %
 \section{Evaluation}
 %
+In this section, we evaluate the implementation of the machine
+learning-based mobile offloading scheduler with online training with
+respect to the scheduling accuracy and classifier training cost.
+%
+In order to compare the performance and cost between the different
+categories of machine learning algorithms, we utilize three machine
+learning algorithms: instance-based learning, perceptron, and na\"{i}ve
+bayes.
+%
+\begin{figure*}[ht]
+\centering
+\subfigure[Build time] {
+\includegraphics[height=4.0cm, width=5.6cm]{Figure/figure4}
+}
+\subfigure[Classification time] {
+\includegraphics[height=4.0cm, width=5.6cm]{Figure/figure5}
+}
+\subfigure[Scheduling accuracy] {
+\includegraphics[height=4.0cm, width=5.6cm]{Figure/figure6}
+}
+\caption{Performance and cost comparison for three machine learning
+algorithms}
+\end{figure*}
+%
 \subsection{Experimental Setup}
 %
-\subsection{Training Cost}
+\subsection{Classifier Training Cost}
 %
-\subsection{Offloading Decision Performance}
+\subsection{Scheduling Accuracy}
 %
 \section{Use Case}
 %
