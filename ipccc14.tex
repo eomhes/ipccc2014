@@ -170,7 +170,7 @@ tasks.
 %
 Based on this integration, we evaluated the cost and performance for
 three machine learning algorithms, instance based learning, perceptron,
-and na\"{i}ve bayes with respect to classifier build time,
+and na\"{i}ve bayes with respect to classifier training time,
 classification time, and scheduling accuracy.
 %
 Even though there have been prior related studies which suggest
@@ -641,14 +641,14 @@ In this section, we evaluate the implementation of the machine
 learning-based mobile offloading scheduler with online training with
 respect to the scheduling accuracy and classifier training cost.
 %
-In order to compare the performance and cost between the different
+In order to compare the performance and cost among the different
 categories of machine learning algorithms, we utilize three machine
-learning algorithms: instance-based learning, perceptron, and na\"{i}ve
-bayes.
+learning algorithms: instance-based learning, single layer perceptron,
+and na\"{i}ve bayes.
 %
 \begin{figure*}[ht]
 \centering
-\subfigure[Build time] {
+\subfigure[Training time] {
 \includegraphics[height=4.0cm, width=5.6cm]{Figure/figure4}
 }
 \subfigure[Classification time] {
@@ -663,11 +663,104 @@ algorithms}
 %
 \subsection{Experimental Setup}
 %
-\subsection{Classifier Training Cost}
+Even though high dimensional machine learning algorithms such as
+decision tree, multilayer perceptron, and support vector machine can
+achieve more accurate scheduling performance, they might be too
+expensive to be used for the mobile offloading scheduler.
 %
+Based on the intuitive observation on the algorithm complexity, we
+selected three machine learning algorithms: instance-based learning,
+single layer perceptron, and na\"{i}ve bayes.\\ 
+%
+\indent Our hardware setup consists of the mobile client and
+remote server which are connected through a wireless router.
+%
+We have utilized Android tabletPC, Nexus 5 equipped with 2.3GHz
+quad-core processor and 2GB RAM, and running Android KitKat as the
+mobile client.
+%
+For the remote server, we used a workstation with Intel 3.0GHz Core2 Duo
+processor and 8GB memory which is running Linux OS.
+%
+In order to emulate various network conditions, furthermore, we
+configured different network bandwidth using Traffic Control
+(TC)~\cite{tc}, a network tool which provides functionality to control
+network traffic by priortizing network resources and using concepts of
+traffic classification, queue disciplines, and quality of service.
+%
+Also, for the mobile application used in the evaluation, we created
+a synthetic benchmark application, matrix multiplication, and DPartner
+rewrote it as the offloading-capable application.
+%
+Though, theoretically, DPartner is applicable to any types of Android
+mobile applications, it is not possible to intentionally change the data
+size and the amount of computation for the real-world applications.
+%
+With matrix multiplication, we are able to easily vary the data size and
+the amount of computation by manually controlling the matrix size.
+%
+\subsection{Overhead of training and classification}
+%
+Since our machine learning-based mobile offloading scheduler keeps
+training the classifier, which leads some runtime overhead, we
+observed the cost to train the machine learning classifier.
+%
+As shown in Figure 4(a), instance-based learning has the shortes
+classifier training time among three machine learning algorithms.  
+%
+In fact, the basis for the classification of instance-based learning is
+the instance database, where previously experienced cases are stored.
+%
+Instead of training the explicit classifier, therefore, instance-based
+learning adds a new instance to the database for the future
+classification raising relatively small training overhead.
+%
+On the other hand, na\"{i}ve bayes with 1000 instances of database has
+the worst training overhead. 
+%
+For the algorithm perspective, na\"{i}ve bayes measures the
+probability density for the given classes with the mean and standard
+deviation, and chooses the class with the highest probability.
+the highest probability.
+%
+Thus na\"{i}ve bayes calculates the mean and standard deviation
+throughout the previous instances for each class whenever a new instance
+is trained.
+%
+Consequently, na\"{i}ve bayes with 1000 instancs, which requires
+relatively heavy calculations for the mean and standard deviation, has
+bigger training overhead than other machine learning algorithms.\\
+%
+\indent Also, Figure 4(b) shows the classification time that the machine
+learning classifier consumes to make a decision.
+%
+Though instance-based learning has the smallest training overhead, it
+takes the longest classification time among three machine learning
+algorithms.
+%
+In fact, instance-based learning grasps the most similar case in the
+instance database and follows the same classification of the most
+similar instance.
+%
+Therefore, instance-based learning has to compare a new problem instance
+with all instances in the database by computing the similarity between
+the new instance and previous stored instances (in our case, we used the
+Euclidean distance to define the similarity).
+%
+For that reason, instance-based learning with 1000 instances has the
+worst classification overhead. 
+% 
 \subsection{Scheduling Accuracy}
 %
+
+%
 \section{Use Case}
+%
+\begin{figure}
+\centering
+\includegraphics[height=5.5cm, width=4.5cm]{Figure/figure7}
+\caption{Go game generated by DPartner.}
+\end{figure}
 %
 \section{Conclusion and Future Work}
 % 
