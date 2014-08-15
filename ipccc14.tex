@@ -83,7 +83,7 @@ The research community has studied various approaches to implement mobile
 offloading frameworks which fall in the following categories:
 application partitioning~\cite{spectra, maui, cuckoo}, thread
 migration~\cite{clonecloud, comet}, application migration~\cite{hung},
-and distributed offloading frameworks~\cite{mmr, sonora, serendipity}.\\
+and distributed offloading frameworks~\cite{mmr, serendipity}.\\
 %
 \indent However, one important fact from an offloading performance
 standpoint of view is that benefits from offloading
@@ -734,45 +734,148 @@ bigger training overhead than other machine learning algorithms.\\
 \indent Also, Figure 4(b) shows the classification time that the machine
 learning classifier consumes to make a decision.
 %
-Though instance-based learning has the smallest training overhead, it
-takes the longest classification time among three machine learning
-algorithms.
+Similarly as the training time, na\"{i}ve bayes shows bigger overhead
+than other machine learing algorithms.
 %
-In fact, instance-based learning grasps the most similar case in the
-instance database and follows the same classification of the most
-similar instance.
+In fact, we used the Gaussian distribution to calculate the probability
+density for each class with the mean and standard deviation value.
 %
-Therefore, instance-based learning has to compare a new problem instance
-with all instances in the database by computing the similarity between
-the new instance and previous stored instances (in our case, we used the
-Euclidean distance to define the similarity).
+Therefore, the classification for na\"{i}ve bayes entails the complex
+arithmetic operations such as the exponential function and the square root
+which take longer than addition, multiplication, or comparison.
 %
-For that reason, instance-based learning with 1000 instances has the
-worst classification overhead. 
-% 
+For that reason, na\"{i}ve bayes has the worst classification overhead.
+%
+Note that perceptron has remarkably low classification overhead compared
+with other machine learning algorithms. 
+%
+For perceptron, the classification process involves calculating the
+output from a multivariable linear equation consisting of the attributes
+weighted by the coefficients, which requires the insignificant amount of
+the computation. 
+%
+As a result, perceptron shows the lowest cost in terms of the
+classification time amongst three machine learning algorithms.
+%
 \subsection{Scheduling Accuracy}
 %
-
+We also investigated the scheduling accuracy of three machine learning
+algorithms.
+%
+For the unbiased evaluation, we turned off the adaptive online training
+mechanism and the training phase and normal operation phase were
+uniformly switched in one period (5 trainings and 15 normal operations)
+and 10 periods were repeated for the average.
+%
+Also, in order to observe the impact of the dynamic network condition
+and data size on the scheduling accuracy, we changed the network
+bandwidth randomly among 1MB/s, 2.5MB/s, 5MB/s, and 9.5MB/s with
+a same interval and each computation processes the different matrix size
+having the different data size. 
+%
+In this experimental setup, we observed how accurate each machine
+learning makes decisions in the normal operation phase.\\
+%
+\indent As you can see in Figure 4(c), instance-based learning achieves
+the highest scheduling performance, showing 87\% of the scheduling
+accuracy.  
+%
+As we mentioned earlier, instance-based learning compares a new
+scheduling problem with the all of the stored instances in the database
+to find out the most similar case in the database.
+%
+It is because that instance-based learning can hardly miss any
+information from the previously stored instances.
+%
+On the other hand, na\"{i}ve bayes has the worst scheduling accuracy
+which is lower than 80\% of the accuracy.
+%
+The reason is that the classification of the probabilistic machine
+learning algorithms is based on the statistics of attibutes of the
+previous instances such as the mean and standard deviation.
+%
+Thus it is possible that the probability-based machine learning
+algorithms can overlook the edge of previously seen instances, which
+causes the performance degradation for the prediction problem.
 %
 \section{Use Case}
 %
+We applied our machine learning-based mobile offloading scheduler with
+online training to Go, the two players board game which is available in
+Google Play.
+%
+In Go game shown in Figure 5, the next stone position of the competitor
+is calculated through the Monte Carlo tree search algorithm, thus the
+offloading-capable version of the Go game offloads the Monte Carlo
+algorithm to the remote server according to the board size and network
+bandwidth.
+%
+Also, for Go game, the quick reactivity from the competitor is one of
+the important aspects to play the game seamlessly.
+%
+So, the on-demand scheduling strategy can cause relatively high overhead
+by doing the scheduling process for every competitor turn.
+%
+For that reason, we utilized the periodic scheduling strategy for Go
+game.\\
+%
+\indent Another possible application is the optical character
+recognition (OCR) application with the translation between different
+languages.
+%
+Character recognition and language traslation technologies include
+the complex mechanisms such as pattern recognition and data mining which
+are suitable for offloading.
+%
+Hence, the flexibility of where to execute these complex algorithms
+according to the image size and network conditions will help the mobile
+device improve the performance and save energy consumption.
+%
 \begin{figure}
 \centering
-\includegraphics[height=5.5cm, width=4.5cm]{Figure/figure7}
+\includegraphics[height=5.0cm, width=4.0cm]{Figure/figure7}
 \caption{Go game generated by DPartner.}
 \end{figure}
 %
 \section{Conclusion and Future Work}
-% 
-%\section*{Acknowledgement}
-%This material is based upon work supported in part by the National Science
-%Foundation under Grant No. 0910812, 0758596, 0855031, and 1265341.
 %
-%Any opinions, findings, and conclusions or recommendations expressed in
-%this material are those of the author(s) and do not necessarily reflect
-%the views of the National Science Foundation.
+In this paper, we proposed the machine learning-based mobile offloading
+scheduler with the online training mechanism.
 %
-%\bibliographystyle{IEEEtran}
+First, we modularized the machine learning-based mobile offloading
+scheduler to generally apply to any types of mobile offloading
+frameworks.
+%
+Also, we suggested the adaptive online training mechanism in which the
+training phase and normal operation phase are dynamically switched
+according to the scheduling accuracy.
+%
+To evaluate our work, we applied the machine learning-based mobile
+offloading scheduler with online training to the Java-based on-demand
+offloading framework.
+%
+Also, we utilized three different machine learning algorithms for the
+offloading scheduler and compared the overhead and performance in terms
+of the training time, classification time, and scheduling accuracy.
+%
+In the evaluation, we observed that instance-based leaning and na\"{i}ve
+bayes have higher than 80\% of the scheduling accuracy with the
+reasonable overhead.\\
+%
+\indent For the future work, we plan to apply our work to various types
+of mobile offloading frameworks with more machine learning algorithms
+and target real-world applications.
+%
+\section*{Acknowledgment}
+This material is based upon work supported in part by the National Science
+Foundation under Grant No. 0910812, 0758596, 0855031, 1265341, and
+1339737.
+%
+Any opinions, findings, and conclusions or recommendations expressed in
+this material are those of the author(s) and do not necessarily reflect
+the views of the National Science Foundation.
+%
+\bibliographystyle{IEEEtran}
 \bibliography{ipccc14}
 \end{document}
 
