@@ -69,15 +69,16 @@ scheduler, online training
 \section{Introduction}
 %
 Over the last decade, mobile offloading techniques have emerged as
-intelligent means to overcome the constraints of the limited resources
-from mobile platforms, smartphones and tabletPCs, so that these types of
-devices delegate computationally intensive computing tasks to more
-powerful external resources such as personal workstations or cloud
-servers.
+a means to overcome resource constraints of mobile platforms (i.e.
+smartphones, tablets).
 %
-Initially, most of research interests on mobile offloading techniques
-have focused on core mechanisms in which \textit{what to offload} and
-\textit{how to offload} have been primarily considered. 
+Offloading allows these devices to delegate computationally-intensive
+tasks to more powerful external resource, such as personal workstations
+or cloud servers.
+%
+Initially, research interests on mobile offloading techniques
+have focused on core mechanisms that deal primarily with \textit{what to
+offload} and \textit{how to offload}.
 %
 The research community has studied various approaches to implement mobile
 offloading frameworks which fall in the following categories:
@@ -85,123 +86,195 @@ application partitioning~\cite{spectra, maui, cuckoo}, thread
 migration~\cite{clonecloud, comet}, application migration~\cite{hung},
 and distributed offloading frameworks~\cite{mmr, serendipity}.\\
 %
-\indent However, one important fact from an offloading performance
-standpoint of view is that benefits from offloading
-computation-intensive portions of mobile applications can be influenced
-by various internal and external factors such as application
-requirements, network conditions, and computing capabilities of mobile
-or external devices.
+\indent However, one important fact is that benefits and drawbacks
+from offloading computation-intensive portions of mobile applications
+can be influenced by various internal and external factors, such as
+applications requirements, network conditions, and computing
+capabilities of mobile and external devices. 
 %
 Thus, \textit{whether to offload or execute locally} needs to be
-decided periodically by monitoring aforementioned dynamic features on
-runtime.
+decided dynamically, and the decision-making can benefit from monitoring
+the aforementioned dynamic features at runtime.
 %
-Otherwise, incorrect offloading decisions may cause the performance
-degradation or worse energy consumption.
+Otherwise, incorrect offloading decisions may cause performance
+degradation and/or increase energy consumption.
 %
-For that reason, research focuses have been naturally shifted into
-dynamic scheduling or decision making problems for mobile offloading
-framework.
+Related work has also considered dynamic scheduling for mobile
+offloading frameworks.
 %
 For example, Kwon et al.~\cite{kwon} consider a simple rule-based
-scheduler in which the framework decides to offload the mobile
-computation only when the data transfer size is higher than a certain
+scheduler in which the framework decides to offload  mobile
+computations only when the data transfer size is higher than a certain
 threshold.
 %
-MAUI~\cite{maui} utilizes a linear regression model among predefined
+MAUI~\cite{maui} utilizes a linear regression model using predefined
 features to make offloading decisions.\\
 %
-\indent Even though these studies on the runtime scheduler for mobile
-offloading system take dynamic features such as data transfer size or
+\indent Even though these systems consider runtime schedulers for mobile
+offloading, which take dynamic features such as data transfer size or
 network conditions into account to make offloading decisions, it is
-impractical for these approaches to build a globally well-defined
-offloading decision policy while considering all possible cases against
-dynamic mobile environments.
+impractical for these approaches to build a comprehensive well-defined
+offloading decision policy embracing all possible cases over dynamic
+mobile environments.
+% 
+Furthermore, it is difficult to generally apply the above efforts to
+various applications, since each application has its own requirements or
+characteristics.
 %
-Furthermore, it is difficult to generalize the above efforts for various
-mobile application use case scenario, since different applications need
-to have different offloading decision policies due to different
-application requirements or characteristics.
+For example, gaming and image processing application may have different
+computating complexity of the amonut of computations, though they
+process a similar size of data.
 %
-Therefore, in practice, it is necessary for the scheduler to learn
-from self-observation of the previous decision correctness and to
-dynamically adapt the decision policy on runtime, thereby an identical
-decision model can be \textit{generally} applied to various mobile
-applications without any predefined decision policies.\\
+Therefore, in practice, ths mobile offloading scheduler has to work
+independently with the type of applications without any predefined
+decision rules.\\ 
 %
-\indent In this paper, we aim to develop a general framework for a
-runtime adaptive scheduler for mobile offloading framework by
-employing various types of machine learning techniques.
+\indent In this paper, we aim to develop a general framework for an
+adaptive scheduler for mobile offloading by employing online, runtime
+machine learning techniques.
 %
-By applying machine learning techniques to scheduling problems
-for mobile offloading framework, the machine learning classifier can
-make decisions on whether mobile computations should be offloaded to
-external resources or executed locally.
+In this approach, a machine learning classifier makes decisions of
+whether mobile computations should be offloaded to external resources,
+or executed locally. 
 %
-To this end, we modularized our previous work on the machine
-learning-based runtime scheduler~\cite{ml} in which any appropriate
-machine learning classifiers can be utilized for the runtime scheduler
-for mobile offloading framework.
+To this end, we extend our previous work on offline machine
+learning-based runtime scheduler~\cite{ml}, and develop a novel online
+scheduling module in which any appropriate machine learning classifier
+can be utilized for the runtime offloading scheduler.
 %
-This work can be plugged and played with any types of mobile offloading
-frameworks in conjunction with the well-defined APIs to monitor and
-acquire dynamic features such as data size, network conditions, or the
-status of external devices. 
+First, we define application programming interfaces (APIs) to monitor and
+acquire dynamic features, such as data sizes, network latency and
+bandwidth, and the status of external devices.
 %
 Furthermore, our work supports an online training mechanism for
 the machine learning-based runtime scheduler such that it learns from
-observation on the previous offloading decision performance, and
-dynamically adapts its decision policy on runtime.\\
+observation of previous offloading decisions, and a policy that
+dynamically adapts scheduling decisions at runtime.\\
 %
-\indent As part of the modularization effort, we integrated the
-modules of the machine learning-based runtime scheduler into the Java-based
-offloading-capable mobile applications which are automatically
-refactored by a novel tool, called \textit{DPartner}.
+\indent To demonstrate its practical applicability, we integrated the
+proposed machine learning-based runtime scheduler with an existing
+Java-based, offloading-capable code refactoring framework,
+\textit{DPartner}~\cite{dpartner}.
 %
-Originally, the offloading-capable mobile applications regenerated by
-DPartner depend on the web-based user interface to offload or execute
-the offloadable computations (i.e. classes) in local, so the user
-schedules them manually by manipulating the user interface in a
-drag-and-drop way.
+Originally, the offloading-capable mobile applications generated by
+DPartner depend on static (or user-provided) input to decide whether to
+execute offloadble computations (i.e. Java classes) locally or remotely.
 %
-By combining the machine learning-based runtime scheduler with these
-applications, the user can be free of the burden of the scheduling
-tasks.
+By combining this paper's machine learning-based runtime scheduler with
+these applications, offloading decisions are dynamic and do not require
+user input.
 %
-Based on this integration, we evaluated the cost and performance for
-three machine learning algorithms, instance based learning, perceptron,
-and na\"{i}ve bayes with respect to classifier training time,
+We have implemented an online-scheduled DPartner prototype, and used it
+to perform quantitative experiments with Android mobile devices and
+applications to quantitatively evaluate the cost and performance for
+three machine learning algorithms: instance-based learning, perceptron,
+and na\"{i}ve bayes.
+%
+Theses are evaluated with respect to classifier training time,
 classification time, and scheduling accuracy.
 %
 Even though there have been prior related studies which suggest
 utilizing machine learning techniques for mobile computing environments,
-to the best of our knowledge, our work is the first to consider the
+to the best of our knowledge, our work is the first to consider an
 online training mechanism for the machine learning-based runtime
-scheduler for mobile offloading framework and demonstrate the
-performance and cost of various machine learning algorithms for the use
-of the runtime scheduler of mobile offloading framework.\\   
+scheduler, and to demonstrate with a end-to-end system performance and
+cost of various machine learning algorithms for the runtime scheduler of
+mobile offloading tasks.\\
 %
 \indent The rest of the paper is organized as follows.
 %
-In Section II, we overview prior research efforts on offloading decision
-problems in mobile offloading framework as well as the use of machine
+In Section II, we overview prior research efforts on 
+mobile offloading frameworks as well as the use of machine
 learning techniques for scheduling problems from various domains.
 %
 Section III summarizes our previous work which proposed the machine
-learning based runtime scheduler for mobile offloading framework.
-%
-Section IV motives the concept of the online machine learning-based
+learning based runtime scheduler for mobile offloading framework, and 
+motivates the concept of the online machine learning-based
 runtime scheduler.
 %
 In Section IV and V, we explain and evaluate our implementation of the
-online ML scheduler.
+online machine learning (ML) scheduler.
 %
-Also, Section VI describes the current and potential applications for
+Section VI describes the current and potential applications for
 our work.
 %
 Finally, we conclude the paper in Section VII.
 %
 \section{Related Works}
+%
+\subsection{Adaptive Mobile Offloading Frameworks}
+%
+Many approaches on adaptive mobile offloading framework have been
+proposed to address scheduling problems on dynamic environments.
+%
+In ~\cite{shigeru}, a prediction heuristic uses linear funtions to
+estimate the local and remote processing time as well as the data
+transfer time.
+%
+The remote server updates these linear functions unsing least-squares
+method and returns the updated prediction funtions to the mobile client,
+then these functions are used to compare the performance between local
+processing and offloading.
+%
+Gu et al.~\cite{xiaohui} try to relieving the memory restriction fo the
+mobile device by adaptively making offloading decisions with help from
+the fuzzy control model, called Offloading Inference Engine (OLIE).
+%
+OLIE monitors the available memory margin of the mobile device and
+network bandwdith, and maps them into the offloading decision
+specifications defined by the application developer so that when the
+present condition matches the specified rule, the mobile workloads are
+offloaded to the remote server.
+%
+Kwon et al.~\cite{kwon} consider a simple rule-based
+scheduler in which the framework decides to offload the mobile
+computation only when the data transfer size is higher than a certain
+threshold.\\
+%
+\indent Although the aforementioned studies take dynamic features
+from hardware or network level (i.e. available memory size, network
+bandwidth) into account, they still depend on the predefined static
+decision rules or cost models while preventing the scheduler from
+adapting to dynamic conditions on runtime.
+%
+In contrast, our approach do not rely on any predefined specifications
+or prior knowledge of the mobile application.
+%
+Instead, we consider machine learning techniques for the adaptive mobile
+offloading scheduler in which the scheduler can be trained on and 
+dynamically make offloading decisions on runtime. 
+%
+\subsection{Machine Learning Techniques for Runtime Scheduler}
+%
+Various areas such as heterogeneous computing platforms, grid computing
+systems, and data center have used machine learning techniques to
+address dynamic scheduling problems.
+%
+In~\cite{zheng}, machine learning techniques are used to provide a
+compiler-based, automatic and portable predictor for multi-core
+processors.
+%
+In order to decide the optimal number of threads and scheduling policy,
+the framework used a feed-forward artificial neural network and a
+multi-class support vector machine model, respectively.
+%
+Berral et al.~\cite{josep} propose an energy-aware
+data center through server consolidation by turning off idle servers
+with assistance from machine learning based scheduling.
+%
+The scheduler predicts the future performance of the jobs and power
+consumption in the resulting job allocation using linear regression
+algorithms.
+%
+This framework uses artificial neural networks for the performance
+modeler which predicts task computation and data communication costs,
+and this modeler is used by the directed acyclic graph to determine an
+appropriate schedule.\\
+%
+\indent Along with the machine learning-based runtime scheduler, we
+further consider the adaptive online training mechanism which stretches
+and shrinks the length of the training period according to the scheduling
+accuracy.
 %
 \section{Runtime Scheduler for Mobile Offloading System}
 %
@@ -377,11 +450,12 @@ Online Training}
 In this section, we describe the architecture and main modules of the
 machine learning-based mobile offloading scheduler with online training.
 %
-Then, we give the implementation details on the adaptive online training
+Then, we describe implementation details on the adaptive online training
 mechanism.
 %
 Finally, we explain how the proposed machine learning-based mobile
-offloading scheduler can be integrated with mobile offloading framework.
+offloading scheduler can be integrated with mobile offloading frameworks,
+using DPartner as a concrete scenario.
 %
 The overall architecture and main modules of the machine learning-based
 mobile offloading scheduler with online training are illustrated in
@@ -399,119 +473,137 @@ application workloads or scheduling-related commands flow path.}
 \subsection{Architecture of the Machine Learning-based Mobile Offloading
 Scheduler}
 %
-As depicted in Figure 1, the overall architecture of the machine
-learning-based mobile offloading scheduler with online training consists
-of four main modules: computation router, runtime scheduler, machine
-learning classifier, and machine learning classifier trainer.
+As depicted in Figure 1, the overall architecture consists
+of four main modules: computation switch, runtime scheduler, machine
+learning classifier, and the trainer for the ML classifier.
 %
 These four main modules interact with each other to execute and
-schedule the mobile computing task, and train the machine learning
-classifier while switching two different phases: \textit{normal
-operation phase} and \textit{online training phase}.
+schedule offloadable tasks, and to train the machine learning
+classifier. 
 %
-In the normal operation phase, when the computation router receives the
-offloadable computations (\textcircled{1}), according to the scheduling
-status (\textcircled{2}), it routes these computations to the
-appropriate execution unit, local computing units or network interface
-(\textcircled{3}). 
+At runtime, the system operates in either of two different phases:
+\textit{normal operation phase} and \textit{online training phase}.
 %
-On the other hand, in the online training phase, the offloadble
-computations are forwarded to both execution units, and the computation
-router feedbacks the performance comparison between offloading and local
-processing (\textcircled{4}).
+In the normal operation phase, first, the computation dispatcher
+receives and offloadable computation (\textcircled{1}).
 %
-Based on the feedback from the router, classifer trainer updates the
-machine learning classifier{\textcircled{5}).
+Then, according to the decision provided by the scheduling module
+(\textcircled{2}), it forwards this computation to the appropriate
+execution unit (\textcircled{3}): either a local computing unit, or a
+remote computing unit (through the network interface).
 %
-The implementation details for main modules are as follows: \\
+In contrast, in the online training phase, the offloadable
+computation is forwarded to \textit{both} execution units; the
+computation dispatcher records the performance of both, and feeds back
+the comparison between offloading and local processing to the trainer
+(\textcircled{4}).
 %
-\textbf{Computation router.} The computation router has the
-responsibility to forward the offloadable mobile computations either to the
+Based on the feedback from the dispatcher, the classifer trainer updates
+the machine learning classifier{\textcircled{5}).
+%
+The implementation details for these modules are as follows: \\
+%
+\textbf{Computation dispatcher.} This module has the
+responsibility to forward offloadable tasks either to the
 network interface (for offloading) or to the local computing units (for
 local processing) according to the scheduling status of each offloadable
-computation which is stored in scheduling table.
+computation stored in scheduling table.
 %
-Also, the router keeps the feedback channel with the classifier updater
-in the machine learning classifier trainer module, so that it provides
-the performance comparison between offloading and local processing 
-the offloading and local processing performance.\\
+In the online training phase, this module provides feedback to the
+classifier updater in the machine learning classifier trainer module, by
+comparing the performance between offloading and local processing and
+recording the approach that leads to best performance.\\
 %
-\textbf{Runtime scheduler.} Since scheduling mobile computations
-requires to profile internal and external dynamic features which are
-used for machine learning attributes such as data size and network
-conditions on runtime, the scheduling process results in the additional
-costs in terms of the runtime overhead and energy consumption.
+\textbf{Runtime scheduler.} Scheduling offloadable computations
+requires the profiling of internal and external dynamic features, such
+as data size of inputs to the task and network latency and bandwidth
+conditions.
 %
-Thus, there exists the trade-off between the scheduling performance and
-cost, as coarse-grained scheduling is much cheaper than frequent
-scheduling, but it leads worse scheduling accuracy.    
+The scheduling process itself results in additional costs in terms of
+runtime overhead and energy consumption.
+%
+Thus, there exists a trade-off between the scheduling performance and
+cost: as coarse-grained scheduling is cheaper than frequent
+scheduling, but can lead to worse scheduling accuracy.    
 %
 For this reason, we consider two scheduling strategies.
-%
-First strategy reschedules the mobile computations whenever the
+% Heungsik: I don't fully understand what you meant in the sentence below
+The first strategy makes scheduling decisions offloadble tasks whenever the
 application executes these mobile computations.
 %
-We refer this strategy to the \textit{on-demand scheduling}.
+We refer to this strategy as \textit{on-demand scheduling}.
 %
-Another strategy is the \textit{periodic scheduling} in which the mobile
-offloadable computations are rescheduled asynchronously with the adaptive
+Another strategy is the \textit{periodic scheduling}, in which
+offloadable tasks are rescheduled asynchronously with an adaptive
 scheduling interval.
 %
-In the periodic scheduling strategy, in other words, scheduling the mobile
-computations is done with the specific interval regardless of the
-invocations of the mobile computations from the application.
+In the periodic strategy, the scheduling decision for future offloadable
+tasks is done at specific intervals, and is not synchronized with the
+invocations of the offloadable tasks from the application.
 %
-However, in order to prevent unnecessarily too frequent scheduling, the
+% Heungsik: it's unclear why periodic would be better from your explanation.
+% you may need an example.
+In order to prevent unnecessarily frequent scheduling, the
 scheduling interval controller changes the scheduling interval according
-to network conditions such that the interval becomes shorter if the
-variation of network bandwidth is less than a certain threshold.
-%
+to network conditions. The policy used is such that the interval becomes shorter if the
+variation of network bandwidth is less than a threshold.
+% Heungsik: this is vague - you need to explain this policy in more details.
+% what's a long interval mode? how does the interval increases/decreases?
+% what do you do with the N measurements? how do you measure bandwidth?
 Otherwise, the scheduling frequency leaves in a long interval mode.
 %
-To end this, the scheduling interval controller stores previous
-\textit{N} network bandwidth measurement histories.\\
+To end this, the scheduling interval controller stores a time series with a history of the previous
+\textit{N} network bandwidth measurements.\\
 %
+% Heungsik: 
+% it's unclear how the classifier and the scheduling table interact
+% the subsection below is not very clear either.
 \textbf{Machine learning classifier.} The machine learning classifier is
-in charge of making decisions on offloading or local processing for the
-offloadable mobile computations by using the attributes obtained by
+in charge of making decisions on offloading or local processing for
+offloadable tasks by using the attributes obtained by
 the network and application profiler.
 %
-Even though it is possible to adopt various attributes to capture the
-present scheduling problem from internal and external environments, for
-the current implementation, we utilized two attributes: the size of data
-to be sent to the remote resource and network bandwidth.
+Even though it is possible to adopt various attributes
+from internal (application) and external (network, remote resources) environments, for
+the current implementation, we employ two attributes: the size of data
+to be sent to the remote resource, and the network bandwidth.
 %
+% Heungsik: sentence below not clear to the reader. needs to be improved
 It is also worth noting that, in the periodic scheduling mode, the
 real-time measurement of the data size of the mobile computations is
 unfeasible because the scheduling process is triggered periodically, but
 asynchronously regardless of the invocations of the mobile computations.
-%
+% Heungsik: how is this calculated? where is it stored? over how many samples?
+% how do you anticipate (you should say predict instead I think) the maximum
+% and minimum from these values? you need to be more specific.
 In the periodic scheduling mode, instead, the application profiler
 calculates the mean and standard deviation of the previous measurements
 to anticipate the maximum and minimum possible data size.
-%
+% Heungsik: what do you mean by both classifications? need to clarit\fy
 Then, the machine learning classifier makes the decision on offloading
 only when both classifications with the maximum and minimum possible
 data size agree on offloading.\\
 %
 \textbf{Machine learning classifier trainer.} With the feedback on the
 performance comparison between offloading and local processing from the
-computation router, the machine learning classifier trainer updates
+computation dispatcher, the machine learning classifier trainer updates
 the machine learning classifier.
 %
 In order to compare the performance between offloading and local
 processing, the trainer creates one separate thread for local
 processing, so that offloading and local processing can be executed
-simultaneously.
+concurrently.
 %
-Then the computation router measures the execution time for both
+Then the computation dispatcher measures the execution time for both
 offloading and local processing to compare the performance and provide
-the feedback into the classifier updater.
+feedback into the classifier updater.
 %
-Finally, with this feedback from the computation router and the
+Finally, with the feedback from the computation dispatcher and the
 attributes from the profilers, the classifier updater trains the
 classifier.
-%
+% Heungsik: overall, I think the details above are a bit repetitive -
+% for instance, feedback from the dispatcher/router is mentioned a few times - and
+% you don't actually present a lot of details.
 \subsection{Adaptive Online Training Mechanism}
 %
 \begin{figure}
@@ -522,20 +614,23 @@ example, we set 70\% of the scheduling accuracy threshold and 5 of the
 minimum number of the mobile computation executions.}
 \end{figure}
 %
-One of important contributions of this work is the adaptive online
-training mechanism in which the training phase stretches and shrinks
-according to the scheduling performance (i.e. scheduling accuracy).
+One of the main contributions of this work is the adaptive online
+training mechanism which allows the training phase duration to stretch and shrink
+dynamically according to the scheduling accuracy.
+% Heungsik: before you go through this example, you need to describe how
+% the algorithm works.
+Figure 2 illustrates an example of how the adaptive online training
+mechanism works.
 %
-Figure 2 illustrate the example of how the adaptive online training
-mechanism.
-%
+% Heungsik: you used "N" earlier, use a different variable here
 In this example, we set the minimum number of the executions of the
 mobile computations in one period to 5.
 %
+% Heungsik: how do yo measure accuracy? how should you configure a threshold?
 First of all, the training phase (empty bars) in a period
 continues until the scheduling accuracy is higher than a certain
 threshold.
-%
+% Heungsik: I do not understand the sentence below at all
 In order to avoid 100\% of the scheduling accuracy at just one training,
 we insert a dummy training which does nothing with the training process,
 but indicates an incorrect decision. 
@@ -546,13 +641,17 @@ accuracy, more than one training in a period can be guaranteed.\\
 \indent Once the training phase finishes, the normal operation phase
 follows by starting the scheduling process until the period is
 completed.
-%
+% Heungsik: it's unclear why you chose 70% and why no error happened.
+% you need to describe the setup/initial conditions/assumptions of your 
+% example before you begin analyzing it
 Since we set 70\% of the accuracy threshold for this example and no
 decision error happened in the first and second period, the machine
 learning can be trained for first three of executions and the rest of
 the executions (two for the first period and seven for the second
 period) are done in the normal operation phase. 
-%
+% Heungsik: why do you increase by a constant? why decrease by period times #errors?
+% you are describing the mechanism without providing much justification for your
+% choices, or guidance as to how to pick up values for thresholds, etc. 
 Furthermore, because there was no decision error in the first and second
 period, the next number of the executions of the mobile computation
 increases by 5 which is the minimum number of the executions in a
@@ -597,10 +696,10 @@ Figure 3.
 %
 \subsection{Integration with On-Demand Java-based Offloading Framework}
 %
-As part of the modularization effort, we integrated the modules of the
-machine learning-based mobile offloading scheduler into the Java-based
-offloading-capable mobile applications which are automatically
-refactored by a novel tool, called DPartner.
+To demonstrate the applicability of this approach, we integrated the modules of the
+machine learning-based mobile offloading scheduler into the DPartner 
+mobile application framework, which is capable of automatically refactoring
+Java-based applications to identify offloadable classes.
 %
 Given an Android mobile application, first of all, DPartner examines its
 bytecode to classify the Java classes into the anchored and offloadable
@@ -614,20 +713,19 @@ offloading.
 %
 Then, DPartner packages the files such as images, xml files, external
 libraries, and rewritten bytecode for the offoadable classes, and
-generate two separate objects which are deployed into the mobile device
+generates two separate objects which are deployed into the mobile device
 and the remote server, respectively.\\
 %
-\indent For the scheduling challenge, however, the offloading-capable
-Android applications generated by DPartner relies upon the third party
-unit which is the web-based user interface named RuntimeManager, so the
-individual user should schedule the offloadable classes manually by
-controlling the user interface in a drag-and-drop way. 
+\indent With respect to scheduling, however, the offloading-capable
+Android applications generated by DPartner requires either static or
+user-provided decisions. 
 %
-Though, for the real use case scenario, it is impractical that the
+However, static scheduling becomes inaccurate if conditions change, and it is impractical that the
 mobile user monitors the internal and external environments and
-schedules each offloadable mobile computations on runtime.
-%
-For that reason, we address this challenge by integrating the modules of
+schedules each offloadable mobile computations at runtime.
+% Heungsik: you are repeating yourself a bit below. You need to describe how
+% you were able to integrate your approach without requiring deep changes to DPartner.
+We address this challenge by integrating the modules of
 the machine learning-based runtime scheduler with the on-demand
 Java-based offloading framework.  
 %
