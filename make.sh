@@ -1,10 +1,10 @@
-latex ipccc14 -interaction=nonstopmode
-latex ipccc14 -interaction=nonstopmode
-bibtex ipccc14
-latex ipccc14 -interaction=nonstopmode
-latex ipccc14 -interaction=nonstopmode
-dvipdfm ipccc14.dvi
+latex mobilecloud15 -interaction=nonstopmode
+latex mobilecloud15 -interaction=nonstopmode
+bibtex mobilecloud15
+latex mobilecloud15 -interaction=nonstopmode
+latex mobilecloud15 -interaction=nonstopmode
+dvipdfm mobilecloud15.dvi
 
-rm *.log *.aux *.bbl *.blg *.out
+rm *.log *.aux *.bbl *.blg
 
 #evince ipccc14.pdf
